@@ -6,11 +6,13 @@ const PORT = process.env.PORT || 8000
 const path = require('path')
 
 
-
-// set template engine
+// set view engine
+// app.use(expressLayout)
+app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'resources/views'))
-app.set('view engine','ejs')
-app.use(expressLayout)
+
+// assets
+app.use(express.static('public'))
 
 
 
