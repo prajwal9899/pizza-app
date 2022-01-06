@@ -9,6 +9,7 @@ const mongoose = require('mongoose')
 const flash = require('express-flash')
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
+const passport = require('passport')
 
 // databse connection
 const connection = mongoose.connect('mongodb://localhost/pizza-app')
@@ -37,6 +38,14 @@ app.use(session({
     cookie: { maxAge: 1000 * 60 * 60 * 24 } //24 hrs
 }))
 
+// passport configuration
+const paasportInit = require('./app/config/passport')
+paasportInit(passport)
+app.use(passport.initialize())
+app.use(passport.session())
+
+
+
 // express flash confifuration
 app.use(flash())
 
@@ -44,6 +53,7 @@ app.use(flash())
 // global miidlewares
 app.use((req,res,next) => {
     res.locals.session = req.session
+    res.locals.user = req.user
     next()
 })
 
@@ -56,8 +66,11 @@ app.set('view engine', 'ejs')
 // assets
 app.use(express.static('public'))
 
-// 
+// to accept json data
 app.use(express.json())
+
+// to accept url encoded data
+app.use(express.urlencoded({extended: false}))
 
 // calling routes
 require('./routes/web')(app)
