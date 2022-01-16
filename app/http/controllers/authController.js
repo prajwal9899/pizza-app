@@ -8,42 +8,50 @@ function authController() {
     }
     return {
         login(req, res) {
-            res.render('auth/login')
+            try {
+                res.render('auth/login')
+            } catch (error) {
+                console.log(error);
+            }
         },
         postLogin(req, res, next) {
 
-            const {email, password } = req.body
-            // validate request
-            if (!email || !password) {
-                req.flash('error', 'All fields are required')
-                req.flash('email', email)
-                return res.redirect('/login')
-            }
-
-
-            passport.authenticate('local', (err, user, info) => {
-                if (err) {
-                    req.flash('error',info.message)
-                    return next(err)
-                }
-
-                if (!user) {
-                    req.flash('error', info.message)
+            try {
+                const {email, password } = req.body
+                // validate request
+                if (!email || !password) {
+                    req.flash('error', 'All fields are required')
+                    req.flash('email', email)
                     return res.redirect('/login')
                 }
-
-                req.logIn(user, (err) => {
+    
+    
+                passport.authenticate('local', (err, user, info) => {
                     if (err) {
-                        req.flash('error', info.message)
+                        req.flash('error',info.message)
                         return next(err)
                     }
-
-                   
-                })
-
-
-                return res.redirect(_getRedirectUrl(req))
-            })(req,res,next)
+    
+                    if (!user) {
+                        req.flash('error', info.message)
+                        return res.redirect('/login')
+                    }
+    
+                    req.logIn(user, (err) => {
+                        if (err) {
+                            req.flash('error', info.message)
+                            return next(err)
+                        }
+    
+                       
+                    })
+    
+    
+                    return res.redirect(_getRedirectUrl(req))
+                })(req,res,next)
+            } catch (error) {
+                console.log(error);
+            }
         },
         register(req, res) {
             res.render('auth/register')
