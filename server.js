@@ -13,7 +13,7 @@ const passport = require('passport')
 const Emitter = require('events')
 
 // databse connection
-const connection = mongoose.connect('mongodb://localhost/pizza-app')
+const connection = mongoose.connect(process.env.MONGO_CONNECTION_URL)
     .then(() => {
         console.log('database connected successfully');
     }).catch((err) => {
@@ -81,6 +81,10 @@ app.use(express.urlencoded({ extended: false }))
 
 // calling routes
 require('./routes/web')(app)
+
+app.use((req,res) =>{
+    res.status(404).render('errors/404')
+})
 
 
 const server = app.listen(PORT, () => {
