@@ -21,7 +21,7 @@ const connection = mongoose.connect(process.env.MONGO_CONNECTION_URL)
     })
 
 var store = new MongoDBStore({
-    uri: 'mongodb://localhost:27017/pizza-app',
+    uri: mongodb+srv://admin:<password>@cluster0.fzxkq.mongodb.net/?retryWrites=true&w=majority,
     collection: 'mySessions'
 });
 
